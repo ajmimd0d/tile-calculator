@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>حاسبة البلاط الاحترافية - برمجة ممدوح</title>
+
+  <!-- Google Font (Arabic) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#0b1220;
+      --bg2:#101a33;
+      --stroke: rgba(255,255,255,.16);
+      --text:#eef2ff;
+      --muted: rgba(238,242,255,.72);
+      --primary:#4f46e5;  /* Indigo */
+      --primary2:#06b6d4; /* Cyan */
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Tajawal", system-ui, -apple-system, Segoe UI, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(79,70,229,.35), transparent 60%),
+        radial-gradient(700px 450px at 90% 20%, rgba(6,182,212,.25), transparent 55%),
+        radial-gradient(700px 500px at 40% 90%, rgba(34,197,94,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
+
+    .header{
+      grid-column: 1 / -1;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:14px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:54px;
+      height:54px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), transparent 55%),
+        linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 12px 30px rgba(79,70,229,.28);
+      border: 1px solid rgba(255,255,255,.18);
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+
+    /* ✅ الشعار الحقيقي */
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .badge{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
+      font-weight:800;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
+    }
+
+    .cardHead{
+      padding:16px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .cardHead h2{
+      margin:0;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .cardBody{ padding:16px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .field{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .field label{
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .icon{
+      width:22px;height:22px;
+      display:grid;place-items:center;
+      border-radius:10px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      font-size: 12px;
+    }
+
+    input{
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      font-size: 15px;
+      outline:none;
+      transition: .2s;
+    }
+
+    input:focus{
+      border-color: rgba(6,182,212,.55);
+      box-shadow: 0 0 0 5px rgba(6,182,212,.16);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition: .2s;
+      user-select:none;
+    }
+
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 16px 30px rgba(79,70,229,.25);
+      flex:1;
+      justify-content:center;
+      min-width: 180px;
+    }
+    .btnPrimary:hover{ transform: translateY(-1px); }
+
+    .btnGhost{
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .btnGhost:hover{ background: rgba(255,255,255,.10); }
+
+    .btnWarn{
+      background: rgba(245,158,11,.16);
+      border: 1px solid rgba(245,158,11,.25);
+    }
+
+    .hint{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .resultBox{
+      padding: 16px;
+      display:none;
+    }
+
+    .resultGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 980px){
+      .resultGrid{ grid-template-columns: 1fr; }
+    }
+
+    .stat{
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .stat .k{
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .stat .v{
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .stat .v small{
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-right: 6px;
+    }
+
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,.10);
+      margin: 14px 0;
+    }
+
+    .signature{
+      text-align:center;
+      margin-top: 12px;
+      font-size: 13px;
+      color: rgba(238,242,255,.70);
+    }
+    .signature b{
+      color: rgba(238,242,255,.92);
+    }
+
+    /* ✅ صورة الخلفية من ملف tiles.jpg الموجود بجانب html */
+    .sideHero{
+      position:relative;
+      min-height: 150px;
+      border-radius: 20px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    }
+    .sideHero .img{
+      position:absolute;
+      inset:0;
+      background-image: url("tiles.jpg");
+      background-size: cover;
+      background-position: center;
+      opacity:.40;
+      transform: scale(1.05);
+    }
+    .sideHero .overlay{
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(11,18,32,.88), rgba(11,18,32,.25));
+    }
+    .sideHero .text{
+      position:relative;
+      padding: 16px;
+    }
+    .sideHero h3{
+      margin:0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .sideHero p{
+      margin:6px 0 0;
+      color: rgba(238,242,255,.75);
+      line-height:1.7;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    @media print{
+      body{ background:#fff; color:#111; }
+      .header, .card{ box-shadow:none; backdrop-filter:none; }
+      .btn, .hint, .sideHero { display:none !important; }
+      input{ border:1px solid #bbb; background:#fff; color:#111; }
+      .card{ border:1px solid #ddd; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrap">
+    <!-- Header -->
+    <div class="header">
+      <div class="brand">
+        <div class="logo" title="شعار">
+          <img src="logo.png" alt="Logo">
+        </div>
+        <div>
+          <h1>حاسبة البلاط الاحترافية</h1>
+          <p>احسب البلاط + الكراتين + الهدر + تكلفة المتر</p>
+        </div>
+      </div>
+
+      <div class="badge">برمجة ممدوح</div>
+    </div>
+
+    <!-- Left: Form -->
+    <div class="card">
+      <div class="cardHead">
+        <div>
+          <h2>بيانات المشروع</h2>
+          <p class="sub">أدخل القيم واضغط “احسب”</p>
+        </div>
+        <div class="badge">📌 نسخة 1.0</div>
+      </div>
+
+      <div class="cardBody">
+        <div class="grid">
+          <div class="field">
+            <label><span class="icon">📐</span> المساحة (م²)</label>
+            <input id="area" type="number" step="0.01" placeholder="مثال: 400">
+          </div>
+
+          <div class="field">
+            <label><span class="icon">📦</span> عدد البلاط في الكرتون</label>
+            <input id="tilesPerBox" type="number" step="1" placeholder="مثال: 16">
+          </div>
+
+          <div class="field">
+            <label><span class="icon">↔️</span> طول البلاطة (سم)</label>
+            <input id="tileLength" type="number" step="0.01" placeholder="مثال: 60">
+          </div>
+
+          <div class="field">
+            <label><span class="icon">↕️</span> عرض البلاطة (سم)</label>
+            <input id="tileWidth" type="number" step="0.01" placeholder="مثال: 60">
+          </div>
+
+          <div class="field">
+            <label><span class="icon">➕</span> نسبة الهدر (%)</label>
+            <input id="waste" type="number" step="0.1" value="10" placeholder="مثال: 10">
+          </div>
+
+          <div class="field">
+            <label><span class="icon">💰</span> سعر المتر (ريال)</label>
+            <input id="pricePerM2" type="number" step="0.01" placeholder="مثال: 25">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btnPrimary" onclick="calculate()">✅ احسب الآن</button>
+          <button class="btn btnGhost" onclick="copyResult()">📋 نسخ النتائج</button>
+          <button class="btn btnWarn" onclick="window.print()">🖨️ طباعة / PDF</button>
+          <button class="btn btnGhost" onclick="resetAll()">♻️ تصفير</button>
+        </div>
+
+        <p class="hint">
+          📌 يتم تقريب عدد البلاط والكراتين <b>للأعلى</b> لأن الشراء يكون قطع كاملة.
+        </p>
+      </div>
+    </div>
+
+    <!-- Right: Results -->
+    <div class="card">
+      <div class="cardHead">
+        <div>
+          <h2>النتائج</h2>
+          <p class="sub">تظهر بعد الحساب</p>
+        </div>
+        <div class="badge">📊</div>
+      </div>
+
+      <div class="cardBody">
+        <div class="sideHero">
+          <div class="img"></div>
+          <div class="overlay"></div>
+          <div class="text">
+            <h3>نتائج دقيقة وسريعة</h3>
+            <p>ادخل المقاسات، الهدر، وسعر المتر.. وراح يطلع لك كل شيء جاهز.</p>
+          </div>
+        </div>
+
+        <div class="resultBox" id="results">
+          <div class="resultGrid">
+            <div class="stat">
+              <div class="k"><span class="icon">⬛</span> مساحة البلاطة</div>
+              <div class="v" id="r_tileArea">—</div>
+            </div>
+
+            <div class="stat">
+              <div class="k"><span class="icon">🧱</span> البلاط المطلوب (مع الهدر)</div>
+              <div class="v" id="r_tilesFinal">—</div>
+            </div>
+
+            <div class="stat">
+              <div class="k"><span class="icon">📦</span> عدد الكراتين</div>
+              <div class="v" id="r_boxesFinal">—</div>
+            </div>
+
+            <div class="stat">
+              <div class="k"><span class="icon">📏</span> مساحة الشراء الفعلية</div>
+              <div class="v" id="r_purchasedArea">—</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="resultGrid">
+            <div class="stat">
+              <div class="k"><span class="icon">💸</span> تكلفة بدون هدر</div>
+              <div class="v" id="r_costNoWaste">—</div>
+            </div>
+
+            <div class="stat">
+              <div class="k"><span class="icon">✅</span> تكلفة مع الهدر</div>
+              <div class="v" id="r_costWithWaste">—</div>
+            </div>
+          </div>
+
+          <div class="signature">✨ <b>برمجة ممدوح</b></div>
+          <div class="signature" style="font-size:12px;color:rgba(238,242,255,.55);" id="copyHint"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let lastText = "";
+
+    function formatNum(n, digits=2){
+      return new Intl.NumberFormat('ar-SA', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      }).format(n);
+    }
+
+    function formatSAR(n){
+      return formatNum(n, 2) + " ر.س";
+    }
+
+    function calculate(){
+      const area = parseFloat(document.getElementById("area").value);
+      const tileLengthCm = parseFloat(document.getElementById("tileLength").value);
+      const tileWidthCm = parseFloat(document.getElementById("tileWidth").value);
+      const tilesPerBox = parseInt(document.getElementById("tilesPerBox").value);
+      const wastePercent = parseFloat(document.getElementById("waste").value);
+      const pricePerM2 = parseFloat(document.getElementById("pricePerM2").value);
+
+      if(!area || area<=0 || !tileLengthCm || tileLengthCm<=0 || !tileWidthCm || tileWidthCm<=0 || !tilesPerBox || tilesPerBox<=0 || wastePercent<0){
+        alert("⚠️ تأكد من إدخال كل القيم بشكل صحيح.");
+        return;
+      }
+
+      const tileLengthM = tileLengthCm / 100;
+      const tileWidthM = tileWidthCm / 100;
+      const tileArea = tileLengthM * tileWidthM;
+
+      const tilesNoWaste = area / tileArea;
+      const tilesWithWaste = tilesNoWaste * (1 + (wastePercent/100));
+      const tilesFinal = Math.ceil(tilesWithWaste);
+
+      const boxesFinal = Math.ceil(tilesFinal / tilesPerBox);
+
+      const purchasedArea = tilesFinal * tileArea;
+
+      document.getElementById("results").style.display = "block";
+
+      document.getElementById("r_tileArea").innerHTML = formatNum(tileArea, 4) + "<small>م²</small>";
+      document.getElementById("r_tilesFinal").innerHTML = formatNum(tilesFinal, 0) + "<small>بلاطة</small>";
+      document.getElementById("r_boxesFinal").innerHTML = formatNum(boxesFinal, 0) + "<small>كرتون</small>";
+      document.getElementById("r_purchasedArea").innerHTML = formatNum(purchasedArea, 2) + "<small>م²</small>";
+
+      const hasPrice = pricePerM2 && pricePerM2 > 0;
+      const costNoWaste = hasPrice ? (area * pricePerM2) : null;
+      const costWithWaste = hasPrice ? (purchasedArea * pricePerM2) : null;
+
+      document.getElementById("r_costNoWaste").innerHTML = hasPrice ? formatSAR(costNoWaste) : "—";
+      document.getElementById("r_costWithWaste").innerHTML = hasPrice ? formatSAR(costWithWaste) : "—";
+
+      lastText =
+`حاسبة البلاط - برمجة ممدوح
+-------------------------
+المساحة: ${area} م²
+مقاس البلاطة: ${tileLengthCm}×${tileWidthCm} سم
+مساحة البلاطة: ${tileArea.toFixed(4)} م²
+الهدر: ${wastePercent}%
+
+عدد البلاط (مع الهدر): ${tilesFinal} بلاطة
+عدد الكراتين: ${boxesFinal} كرتون
+مساحة الشراء الفعلية: ${purchasedArea.toFixed(2)} م²
+` + (hasPrice ? `
+التكلفة بدون هدر: ${costNoWaste.toFixed(2)} ر.س
+التكلفة مع الهدر: ${costWithWaste.toFixed(2)} ر.س
+` : "");
+
+      document.getElementById("copyHint").textContent = "جاهز ✅ تقدر تنسخ النتائج أو تطبعها.";
+    }
+
+    async function copyResult(){
+      if(!lastText){
+        alert("احسب أولاً ثم انسخ النتائج ✅");
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(lastText);
+        document.getElementById("copyHint").textContent = "✅ تم نسخ النتائج للحافظة!";
+      }catch(e){
+        document.getElementById("copyHint").textContent = "⚠️ ما قدرت أنسخ تلقائيًا. استخدم الطباعة ثم انسخ.";
+      }
+    }
+
+    function resetAll(){
+      document.getElementById("area").value = "";
+      document.getElementById("tileLength").value = "";
+      document.getElementById("tileWidth").value = "";
+      document.getElementById("tilesPerBox").value = "";
+      document.getElementById("waste").value = "10";
+      document.getElementById("pricePerM2").value = "";
+      document.getElementById("results").style.display = "none";
+      document.getElementById("copyHint").textContent = "";
+      lastText = "";
+    }
+  </script>
+
+</body>
+</html>
